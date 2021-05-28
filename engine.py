@@ -1,26 +1,29 @@
+import random
+
 def create_board(width, height):
-    '''
-    Creates a new game board based on input parameters.
-
-    Args:
-    int: The width of the board
-    int: The height of the board
-
-    Returns:
-    list: Game board
-    '''
+    board = []  #width jelenti, hogy hány eleme van egy belső listának
+                 #height jelenti, hogy hány lista van a listában
+    hcount = 0
+    for i in range(height):
+        col = []
+        wcount = 0
+        for j in range(width):
+            if hcount == 0 or hcount == height-1 or wcount == 0 or wcount == width-1:
+                col.append('i')
+            else:
+                col.append(" ")
+            wcount += 1
+        board.append(col)
+        hcount += 1
+    while True:
+        row = random.randrange(0,height)
+        col = random.randrange(0,width)
+        if board[row][col] == 'i':
+            board[row][col] = 'G'
+            break
+    return board
     pass
 
 
 def put_player_on_board(board, player):
-    '''
-    Modifies the game board by placing the player icon at its coordinates.
-
-    Args:
-    list: The game board
-    dictionary: The player information containing the icon and coordinates
-
-    Returns:
-    Nothing
-    '''
     pass
