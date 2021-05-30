@@ -9,7 +9,7 @@ def create_board(width, height):
         wcount = 0
         for j in range(width):
             if hcount == 0 or hcount == height-1 or wcount == 0 or wcount == width-1:
-                col.append('i')
+                col.append('#')
             else:
                 col.append(" ")
             wcount += 1
@@ -18,11 +18,10 @@ def create_board(width, height):
     while True:
         row = random.randrange(0,height)
         col = random.randrange(0,width)
-        if board[row][col] == 'i':
+        if board[row][col] == '#':
             board[row][col] = 'G'
             break
     return board
-    pass
 
 
 def put_player_on_board(board, player):
