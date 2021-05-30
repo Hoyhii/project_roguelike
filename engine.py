@@ -1,3 +1,4 @@
+from main import PLAYER_START_X
 import random
 
 def create_board(width, height):
@@ -25,4 +26,9 @@ def create_board(width, height):
 
 
 def put_player_on_board(board, player):
-    pass
+    x = player['x']
+    y = player['y']
+
+    board[y][x] = player['icon']
+
+    return board
