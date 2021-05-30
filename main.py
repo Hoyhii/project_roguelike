@@ -16,7 +16,8 @@ def create_player(PLAYER_START_X,PLAYER_START_Y):
         'x':PLAYER_START_X,
         'race':1,
         'name':'',
-        'items':{}
+        'items':{},
+        'icon':'@'
     }
     return player
 
