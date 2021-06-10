@@ -32,12 +32,14 @@ def main():
     while is_running:
         board = engine.put_player_on_board(board, player)
         ui.display_board(board)
-
         key = util.key_pressed()
+
         if key == 'q':
                 is_running = False
-        if key in ('w','a','s','d'):
-            
+        elif key in ('w','a','s','d'):
+            prev_X = player['x']
+            prev_Y = player['y']
+
             if key == 'w':
                 player['y'] -= 1
             elif key == 'a':
@@ -47,12 +49,9 @@ def main():
             elif key == 'd':
                 player['x'] += 1
             
-            
-            
-
+            board[prev_Y][prev_X] = " "
             
         util.clear_screen()
-
 
 if __name__ == '__main__':
     main()
