@@ -25,6 +25,7 @@ def create_player(PLAYER_START_X,PLAYER_START_Y):
 def main():
     player = create_player(PLAYER_START_X,PLAYER_START_Y)
     board = engine.create_board(BOARD_WIDTH, BOARD_HEIGHT)
+    
 
     util.clear_screen()
     is_running = True
@@ -34,9 +35,22 @@ def main():
 
         key = util.key_pressed()
         if key == 'q':
-            is_running = False
-        else:
-            pass
+                is_running = False
+        if key in ('w','a','s','d'):
+            
+            if key == 'w':
+                player['y'] -= 1
+            elif key == 'a':
+                player['x'] -= 1
+            elif key == 's':
+                player['y'] += 1
+            elif key == 'd':
+                player['x'] += 1
+            
+            
+            
+
+            
         util.clear_screen()
 
 
