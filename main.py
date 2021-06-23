@@ -53,8 +53,8 @@ def main():
         util.clear_screen()
         board = engine.put_player_on_board(board, player)
         ui.display_board(board)
-
         key = util.key_pressed()
+
         if key == 'q':
                 is_running = False
         if key in ('w','a','s','d'):
@@ -85,7 +85,6 @@ def main():
 
             
         util.clear_screen()
-
 
 if __name__ == '__main__':
     main()
