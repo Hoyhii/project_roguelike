@@ -22,6 +22,13 @@ def create_board(width, height):
         if board[row][col] == '#':
             board[row][col] = 'G'
             break
+    for i in range(3):
+        while True:
+            row = random.randrange(0,height)
+            col = random.randrange(0,width)
+            if board[row][col] == ' ':
+                board[row][col] = 'S'
+                break
     return board
 
 
