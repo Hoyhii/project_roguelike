@@ -1,27 +1,35 @@
 from main import PLAYER_START_X
 import random
 
+
 def create_board(width, height):
-    board = []  #width jelenti, hogy hány eleme van egy belső listának
-                 #height jelenti, hogy hány lista van a listában
-    hcount = 0
+    height_count = 0
+    board = []  
+    #width jelenti, hogy hány eleme van egy belső listának
+    #height jelenti, hogy hány lista van a listában
+
+    """ Creates a rectangle map with borders around it """
     for i in range(height):
         col = []
-        wcount = 0
+        width_count = 0
         for j in range(width):
-            if hcount == 0 or hcount == height-1 or wcount == 0 or wcount == width-1:
+            if height_count == 0 or height_count == height-1 or width_count == 0 or width_count == width-1:
                 col.append('#')
             else:
                 col.append(" ")
-            wcount += 1
+            width_count += 1
         board.append(col)
-        hcount += 1
+        height_count += 1
+
+    """ Creates a gate on the board """
     while True:
         row = random.randrange(0,height)
         col = random.randrange(0,width)
         if board[row][col] == '#':
             board[row][col] = 'G'
             break
+
+    """ Places randomized type and amount of items on the map  """
     for i in range(random.randrange(3,6)):
         while True:
             row = random.randrange(0,height)
@@ -30,6 +38,7 @@ def create_board(width, height):
                 item = get_all_items()[random.randrange(0,len(get_all_items()))]
                 board[row][col] = item['icon']
                 break
+        
     return board
 
 
@@ -40,6 +49,7 @@ def put_player_on_board(board, player):
     board[y][x] = player['icon']
 
     return board
+
 
 def create_item(type):
     item = {}
@@ -55,8 +65,10 @@ def create_item(type):
 
     
 def get_all_items():
-    items = [{'icon':'S', 'type':'sword'},
+    list_of_all_items = [
+            {'icon':'S', 'type':'sword'},
             {'icon':'K', 'type':'key'},
             {'icon':'F', 'type':'food'},
-            {'icon':'A','type':'armor'}]
-    return items
+            {'icon':'A','type':'armor'}
+            ]
+    return list_of_all_items

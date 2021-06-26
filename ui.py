@@ -4,6 +4,7 @@ def display_board(board,player):
             print(i, end='')
         print('\n',end='')
 
+
 def display_stats(player):
     print("hp: " + str(player['current_hp']) + ", armor: " + str(player['base_armor']))
     for item in player['items']:
