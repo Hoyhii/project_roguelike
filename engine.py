@@ -12,12 +12,22 @@ def create_board(width, height):
     for i in range(height):
         col = []
         width_count = 0
+
         for j in range(width):
-            if height_count == 0 or height_count == height-1 or width_count == 0 or width_count == width-1:
+            is_coorinate_on_edge = (
+                height_count == 0 or 
+                width_count == 0 or 
+                height_count == height-1 or
+                width_count == width-1
+            )
+
+            if is_coorinate_on_edge:
                 col.append('#')
             else:
                 col.append(" ")
+
             width_count += 1
+            
         board.append(col)
         height_count += 1
 
@@ -25,6 +35,7 @@ def create_board(width, height):
     while True:
         row = random.randrange(0,height)
         col = random.randrange(0,width)
+
         if board[row][col] == '#':
             board[row][col] = 'G'
             break
@@ -34,9 +45,10 @@ def create_board(width, height):
         while True:
             row = random.randrange(0,height)
             col = random.randrange(0,width)
+
             if board[row][col] == ' ':
-                item = get_all_items()[random.randrange(0,len(get_all_items()))]
-                board[row][col] = item['icon']
+                random_item = get_all_items()[random.randrange(0,len(get_all_items()))]
+                board[row][col] = random_item['icon']
                 break
         
     return board

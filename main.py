@@ -34,19 +34,22 @@ def no_collision(board,coordinate_y,coordinate_x):
 
 
 def check_move(player,key_pressed,board):
-    coordinate_x = player['x']
-    coordinate_y = player['y']
+    x = player['x']
+    y = player['y']
 
     if key_pressed == 'w':
-        coordinate_y -= 1
+        y -= 1
     elif key_pressed == 'a':
-        coordinate_x -= 1
+        x -= 1
     elif key_pressed == 's':
-        coordinate_y += 1
+        y += 1
     elif key_pressed == 'd':
-        coordinate_x += 1
+        x += 1
 
-    return (no_collision(board,coordinate_y,coordinate_x), check_if_item(board, coordinate_y, coordinate_x, player))
+    is_collision = no_collision(board,y,x)
+    modified_player = check_if_item(board, y, x, player)
+
+    return (is_collision, modified_player)
     
 
 def check_if_item(board, coordinate_y, coordinate_x, player):
