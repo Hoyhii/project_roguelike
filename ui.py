@@ -1,4 +1,4 @@
-def display_board(board,player):
+def display_board(board):
     for elem in board:
         for i in elem:
             print(i, end='')
@@ -6,7 +6,7 @@ def display_board(board,player):
 
 
 def display_stats(player):
-    print("hp: " + str(player['current_hp']) + ", armor: " + str(player['base_armor']))
+    print("hp: ", player['current_hp'], ", armor: ", player['base_armor'])
     for item in player['items']:
         if(item['type'] == 'sword'):
 
