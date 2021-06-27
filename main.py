@@ -43,6 +43,7 @@ def no_collision(board, y, x, player):
 
     elif board[y][x] == 'O':
         can_open_gate(player, True)
+        check_if_o = True
         return  (True, board, check_if_o)
 
     return (True, board, check_if_o)
@@ -160,6 +161,10 @@ def main():
                     continue
             if check_if_o == False:
                 board[previous_y][previous_x] = " "
+            elif board[previous_y][previous_x] == "O":
+                check_if_o = True
+                check_if_next = True
+                continue
             else:
                 check_if_next = True
                 continue
@@ -170,10 +175,6 @@ def main():
                 board[previous_y][previous_x] = "O"
                 check_if_o = False
                 check_if_next = False
-                continue
-                
-                
-                
             
  
         util.clear_screen()
