@@ -106,12 +106,13 @@ def main():
 
     is_running = True
     is_inventory_visible = False
+    check_if_next = False
 
     """ The main game loop """
     while is_running:
         util.clear_screen()
         board = engine.put_player_on_board(board, player)
-        ui.display_board(board,player)
+        ui.display_board(board)
         
         if is_inventory_visible:
             ui.display_stats(player)
@@ -157,11 +158,22 @@ def main():
                     player['x'] += 1
                 else:
                     continue
-            if check_if_o == True:
-                board[player['y']][player['x']]  = "O"
+            if check_if_o == False:
+                board[previous_y][previous_x] = " "
+            else:
+                check_if_next = True
+                continue
+            
+            if check_if_next == False:
+                board[previous_y][previous_x] = ' '
+            else:
+                board[previous_y][previous_x] = "O"
+                check_if_o = False
+                check_if_next = False
+                continue
                 
-            board[previous_y][previous_x] = " "
-               
+                
+                
             
  
         util.clear_screen()
