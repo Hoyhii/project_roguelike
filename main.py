@@ -28,25 +28,24 @@ def create_player():
 
 
 def no_collision(board, y, x, player):
-    check_if_o = False
+    is_player_on_the_gate = False
 
     if board[y][x] == '#':
-            return  (False, board, check_if_o)
+            return  (False, board, is_player_on_the_gate)
     
     elif board[y][x] == 'G':
         if can_open_gate(player, False):
-            board[y][x] = 'O'
-            check_if_o = True
-            return  (True, board, check_if_o)
+            is_player_on_the_gate = True
+            return  (True, board, is_player_on_the_gate)
         else:
-            return (False, board, check_if_o)
+            return (False, board, is_player_on_the_gate)
 
     elif board[y][x] == 'O':
         can_open_gate(player, True)
-        check_if_o = True
-        return  (True, board, check_if_o)
+        is_player_on_the_gate = True
+        return  (True, board, is_player_on_the_gate)
 
-    return (True, board, check_if_o)
+    return (True, board, is_player_on_the_gate)
 
 def can_open_gate(player,is_door_opened):
     has_key=False
@@ -98,7 +97,7 @@ def check_if_item(board, y, x, player):
     elif board[y][x] == 'K':
         player['items'].append(engine.create_item('key'))
 
-    return (player)
+    return player
 
 
 def main():
@@ -107,7 +106,7 @@ def main():
 
     is_running = True
     is_inventory_visible = False
-    check_if_next = False
+    is_player_in_front_of_the_gate = False
 
     """ The main game loop """
     while is_running:
@@ -136,46 +135,37 @@ def main():
             previous_x = player['x']
             previous_y = player['y']
             if key == 'w':
-                valid_move, player, board, check_if_o = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['y'] -= 1
                 else:
                     continue
             elif key == 'a':
-                valid_move, player, board, check_if_o = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['x'] -= 1
                 else:
                     continue
             elif key == 's':
-                valid_move, player, board, check_if_o = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['y'] += 1
                 else:
                     continue
             elif key == 'd':
-                valid_move, player, board, check_if_o = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['x'] += 1
                 else:
                     continue
-            if check_if_o == False:
+
+            if is_player_in_front_of_the_gate == False:
                 board[previous_y][previous_x] = " "
-            elif board[previous_y][previous_x] == "O":
-                check_if_o = True
-                check_if_next = True
-                continue
-            else:
-                check_if_next = True
-                continue
-            
-            if check_if_next == False:
-                board[previous_y][previous_x] = ' '
+                if is_player_on_gate == True:
+                    is_player_in_front_of_the_gate = True
             else:
                 board[previous_y][previous_x] = "O"
-                check_if_o = False
-                check_if_next = False
-            
+                is_player_in_front_of_the_gate = False
  
         util.clear_screen()
 
