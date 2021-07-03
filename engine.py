@@ -14,14 +14,14 @@ def create_board(width, height):
         width_count = 0
 
         for j in range(width):
-            is_coorinate_on_edge = (
+            is_coordinate_on_edge = (
                 height_count == 0 or 
                 width_count == 0 or 
                 height_count == height-1 or
                 width_count == width-1
             )
 
-            if is_coorinate_on_edge:
+            if is_coordinate_on_edge:
                 col.append('#')
             else:
                 col.append(" ")
@@ -40,6 +40,7 @@ def create_board(width, height):
             board[row][col] = 'G'
             break
 
+    spawned_key=False
     """ Places randomized type and amount of items on the map  """
     for i in range(random.randrange(3,6)):
         while True:
@@ -47,8 +48,12 @@ def create_board(width, height):
             col = random.randrange(0,width)
 
             if board[row][col] == ' ':
-                random_item = get_all_items()[random.randrange(0,len(get_all_items()))]
-                board[row][col] = random_item['icon']
+                if(not spawned_key):
+                    board[row][col] = get_all_items()[0]['icon']
+                    spawned_key=True
+                else:
+                    random_item = get_all_items()[random.randrange(1,len(get_all_items()))]
+                    board[row][col] = random_item['icon']
                 break
         
     return board
@@ -72,14 +77,14 @@ def create_item(type):
     if type == 'food':
         item = {'type':'food', 'restore_hp': random.randrange(10,25)}
     if type == 'armor':
-        item = {'type':'armor', 'additional_armor':random.randrange(10,20)}
+        item = {'type':'armor', 'additional_armor': random.randrange(10,20)}
     return item
 
     
 def get_all_items():
     list_of_all_items = [
-            {'icon':'S', 'type':'sword'},
             {'icon':'K', 'type':'key'},
+            {'icon':'S', 'type':'sword'},
             {'icon':'F', 'type':'food'},
             {'icon':'A','type':'armor'}
             ]

@@ -27,11 +27,39 @@ def create_player():
     return player
 
 
-def no_collision(board,coordinate_y,coordinate_x):
-    if board[coordinate_y][coordinate_x] == '#':
-            return False
-    return True
+def no_collision(board, y, x, player):
+    is_player_on_the_gate = False
 
+    if board[y][x] == '#':
+            return  (False, board, is_player_on_the_gate)
+    
+    elif board[y][x] == 'G':
+        if can_open_gate(player, False):
+            is_player_on_the_gate = True
+            return  (True, board, is_player_on_the_gate)
+        else:
+            return (False, board, is_player_on_the_gate)
+
+    elif board[y][x] == 'O':
+        can_open_gate(player, True)
+        is_player_on_the_gate = True
+        return  (True, board, is_player_on_the_gate)
+
+    return (True, board, is_player_on_the_gate)
+
+def can_open_gate(player,is_door_opened):
+    has_key=False
+
+    if not is_door_opened:
+        for item in player['items']:
+            if item['type'] == 'key':
+                has_key=True
+                player['items'].remove(item)
+    else:
+        has_key=True
+
+    return has_key
+        
 
 def check_move(player,key_pressed,board):
     x = player['x']
@@ -46,28 +74,27 @@ def check_move(player,key_pressed,board):
     elif key_pressed == 'd':
         x += 1
 
-    is_collision = no_collision(board,y,x)
+    is_no_collision, modified_board, check_if_o = no_collision(board, y, x, player)
     modified_player = check_if_item(board, y, x, player)
 
-    return (is_collision, modified_player)
+    return (is_no_collision, modified_player, modified_board, check_if_o)
     
 
-def check_if_item(board, coordinate_y, coordinate_x, player):
-    if board[coordinate_y][coordinate_x] == 'S':
+def check_if_item(board, y, x, player):
+    if board[y][x] == 'S':
         player['items'].append(engine.create_item('sword'))
 
-    elif board[coordinate_y][coordinate_x] == 'A':
-        player['base_armor']+=engine.create_item('armor')['additional_armor']
-        #player['armor'].append(engine.create_item('armor'))
+    elif board[y][x] == 'A':
+        player['items'].append(engine.create_item('armor'))
 
-    elif board[coordinate_y][coordinate_x] == 'F':
+    elif board[y][x] == 'F':
         food = engine.create_item('food')
         if(player['current_hp'] + food['restore_hp'] < player['base_hp']):
             player['current_hp'] += food['restore_hp']
         else:
             player['current_hp'] = player['base_hp']
 
-    elif board[coordinate_y][coordinate_x] == 'K':
+    elif board[y][x] == 'K':
         player['items'].append(engine.create_item('key'))
 
     return player
@@ -79,12 +106,13 @@ def main():
 
     is_running = True
     is_inventory_visible = False
+    is_player_in_front_of_the_gate = False
 
     """ The main game loop """
     while is_running:
         util.clear_screen()
         board = engine.put_player_on_board(board, player)
-        ui.display_board(board,player)
+        ui.display_board(board)
         
         if is_inventory_visible:
             ui.display_stats(player)
@@ -107,30 +135,37 @@ def main():
             previous_x = player['x']
             previous_y = player['y']
             if key == 'w':
-                valid_move, player = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['y'] -= 1
                 else:
                     continue
             elif key == 'a':
-                valid_move, player = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['x'] -= 1
                 else:
                     continue
             elif key == 's':
-                valid_move, player = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['y'] += 1
                 else:
                     continue
             elif key == 'd':
-                valid_move, player = check_move(player,key,board)
+                valid_move, player, board, is_player_on_gate = check_move(player,key,board)
                 if valid_move:
                     player['x'] += 1
                 else:
                     continue
-            board[previous_y][previous_x] = " "
+
+            if is_player_in_front_of_the_gate == False:
+                board[previous_y][previous_x] = " "
+                if is_player_on_gate == True:
+                    is_player_in_front_of_the_gate = True
+            else:
+                board[previous_y][previous_x] = "O"
+                is_player_in_front_of_the_gate = False
  
         util.clear_screen()
 
