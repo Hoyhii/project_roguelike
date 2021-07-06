@@ -40,52 +40,70 @@ def create_board(width, height):
             board[row][col] = 'G'
             break
 
-    spawned_key=False
+
     """ Places randomized type and amount of items on the map  """
-    for i in range(random.randrange(3,6)):
+    min_entities = 5
+    max_entities = 8
+    number_of_entities = random.randrange(min_entities,max_entities)
+
+    for i in range(number_of_entities):
         while True:
             row = random.randrange(0,height)
             col = random.randrange(0,width)
-
-            if board[row][col] == ' ':
-                if(not spawned_key):
-                    board[row][col] = get_all_items()[0]['icon']
-                    spawned_key=True
+ 
+            if  board[row][col] == ' ' and row != 3 and col != 3:
+                if i == 0:
+                    board[row][col] = get_entity('key')
+                elif i < number_of_entities/3:
+                    board[row][col] = get_entity('enemy')
                 else:
-                    random_item = get_all_items()[random.randrange(1,len(get_all_items()))]
-                    board[row][col] = random_item['icon']
+                    random_item = get_entity('random')
+                    board[row][col] = random_item['map_icon']
                 break
         
     return board
 
+def get_entity(entity):
+    random_item_offset = 2
+
+    if(entity == "key"):
+        return get_all_entity()[0]['map_icon']
+    elif(entity == "enemy"):
+        return get_all_entity()[1]['map_icon']
+    elif(entity == "random"): #random entity selection excludes the key and enemy entity
+        return get_all_entity()[random.randrange(random_item_offset,len(get_all_entity()))]
+    
 
 def put_player_on_board(board, player):
     x = player['x']
     y = player['y']
 
-    board[y][x] = player['icon']
+    board[y][x] = player['map_icon']
 
     return board
 
 
-def create_item(type):
-    item = {}
+def create_entity(type):
+    entity = {}
     if type == 'sword':
-        item = {'type':'sword','additional_dmg':random.randrange(2,6)}
+        entity = {'type':'sword','additional_damage':random.randrange(2,6)}
     if type == 'key':
-        item = {'type':'key'}
+        entity = {'type':'key'}
     if type == 'food':
-        item = {'type':'food', 'restore_hp': random.randrange(10,25)}
+        entity = {'type':'food', 'restore_health': random.randrange(10,25)}
     if type == 'armor':
-        item = {'type':'armor', 'additional_armor': random.randrange(10,20)}
-    return item
+        entity = {'type':'armor', 'additional_armor': random.randrange(10,20)}
+    if type == 'enemy':
+        entity = {'type':'enemy', 'base_damage': random.randrange(10,20), 'current_health': random.randrange(150, 250), 'base_armor': random.randrange(150, 250)}
+    return entity
 
     
-def get_all_items():
-    list_of_all_items = [
-            {'icon':'K', 'type':'key'},
-            {'icon':'S', 'type':'sword'},
-            {'icon':'F', 'type':'food'},
-            {'icon':'A','type':'armor'}
+def get_all_entity():
+    list_of_all_entities = [
+            {'map_icon':'K', 'type':'key'},
+            {'map_icon':'X','type':'enemy'},
+            {'map_icon':'S', 'type':'sword'},
+            {'map_icon':'F', 'type':'food'},
+            {'map_icon':'A','type':'armor'}
             ]
-    return list_of_all_items
+    return list_of_all_entities

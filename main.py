@@ -10,21 +10,93 @@ BOARD_WIDTH = 20
 BOARD_HEIGHT = 10
 
 
-def create_player():
+def create_player(role):
+    if role == 'warrior':
+        strength = 6 #+dmg and hp
+        dexterity = 3 #dodge chance and crit (highest amount of damage)
+        intelligence = 1  #spell damage (more dmg than strength damage, less than crit) and little dodge chance
+
+        max_health = 200
+        spell_damage = 0
+
+    elif role == 'rogue':
+        strength =1
+        dexterity = 6
+        intelligence = 3 
+
+        max_health = 120
+        spell_damage = 0
+
+    elif role == 'mage':
+        strength = 1
+        dexterity = 2
+        intelligence = 7
+
+        max_health = 100
+        spell_damage = 5
+
     player = {
+
             'y':PLAYER_START_Y,
             'x':PLAYER_START_X,
-            'race':1,
-            'name':'',
+            'map_icon':PLAYER_ICON,
+
+            'role': role,
+            'name':'Pelőn',
             'items':[],
-            'icon':PLAYER_ICON,
-            'base_dmg':5,
-            'base_hp':100,
-            'current_hp':100,
-            'base_armor':0
+            
+            'base_damage':5,
+            'spell_damage': spell_damage,
+            'base_armor':0,
+
+            'strength' : strength,
+            'dexterity': dexterity,
+            'intelligence': intelligence,
+
+            'max_health': max_health,
+            'current_health': max_health,
+            
+            'equipped_armor' : 0,
+            'equipped_weapon': 0
+
             }
 
     return player
+
+
+def fight(player):
+    enemy = engine.create_entity("enemy")
+    is_player_won = False
+    player_armor = player['base_armor'] + player['equipped_armor']['additional_armor']
+
+    while True:
+        util.clear_screen()
+        print("""
+    ,` -.)
+   ( _/----._
+  /,|`--._,-^|            ,
+  \_| |`-._/||          ,'|
+    |  `-, / |         /  /
+    |     || |        /  /
+     `r-._||/   __   /  /
+ __,-<_     )`-/  `./  /
+'  \   `---'   \   /  /
+    |           |./  /
+    /           //  /
+\_/' \         |/  /
+ |    |   _,^-'/  /
+ |    , ``  (\/  /_
+  \,.->._    \X-=/^
+  (  /   `-._//^`
+   `Y-.____(__}
+    |     {__)
+          ()""")
+        print("Player health:", player["current_health"], " dmg:", player["base_damage"], " armor:", player["base_armor"])
+
+        print("Enemy health:", enemy["current_health"], " dmg:", enemy["base_damage"], " armor:", enemy["base_armor"])
+        break
+
+    return is_player_won ,player
 
 
 def no_collision(board, y, x, player):
@@ -39,6 +111,10 @@ def no_collision(board, y, x, player):
             return  (True, board, is_player_on_the_gate)
         else:
             return (False, board, is_player_on_the_gate)
+
+    elif board[y][x] == 'X':
+        fight(player)
+        return (False, board, is_player_on_the_gate)
 
     elif board[y][x] == 'O':
         can_open_gate(player, True)
@@ -75,33 +151,37 @@ def check_move(player,key_pressed,board):
         x += 1
 
     is_no_collision, modified_board, check_if_o = no_collision(board, y, x, player)
-    modified_player = check_if_item(board, y, x, player)
+    modified_player = check_if_entity(board, y, x, player)
 
     return (is_no_collision, modified_player, modified_board, check_if_o)
     
 
-def check_if_item(board, y, x, player):
+def check_if_entity(board, y, x, player):
     if board[y][x] == 'S':
-        player['items'].append(engine.create_item('sword'))
+        player['items'].append(engine.create_entity('sword'))
 
     elif board[y][x] == 'A':
-        player['items'].append(engine.create_item('armor'))
+        player['items'].append(engine.create_entity('armor'))
 
     elif board[y][x] == 'F':
-        food = engine.create_item('food')
-        if(player['current_hp'] + food['restore_hp'] < player['base_hp']):
-            player['current_hp'] += food['restore_hp']
+        food = engine.create_entity('food')
+        if(player['current_health'] + food['restore_health'] < player['max_health']):
+            player['current_health'] += food['restore_health']
         else:
-            player['current_hp'] = player['base_hp']
+            player['current_health'] = player['max_health']
 
     elif board[y][x] == 'K':
-        player['items'].append(engine.create_item('key'))
+        player['items'].append(engine.create_entity('key'))
 
     return player
 
+def character_creation():
+    pass
+
 
 def main():
-    player = create_player()
+    role = character_creation()
+    player = create_player('warrior')
     board = engine.create_board(BOARD_WIDTH, BOARD_HEIGHT) 
 
     is_running = True
@@ -112,10 +192,7 @@ def main():
     while is_running:
         util.clear_screen()
         board = engine.put_player_on_board(board, player)
-        ui.display_board(board)
-        
-        if is_inventory_visible:
-            ui.display_stats(player)
+        ui.display_board(board, player)
 
         key = util.key_pressed()
 
@@ -125,10 +202,8 @@ def main():
 
         """ Open or close inventorz """
         if key == 'i':
-            if is_inventory_visible:
-                is_inventory_visible = False
-            else:
-                is_inventory_visible = True
+            player = ui.display_stats(player)
+           
                 
         """ Handles the movement input """  
         if key in ('w','a','s','d'):
